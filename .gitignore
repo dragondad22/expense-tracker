@@ -1,4 +1,17 @@
-venv/
-__pycache__/
+# Python
 *.pyc
-*.pyo
+__pycache__/
+
+# Virtual environment
+venv/
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
