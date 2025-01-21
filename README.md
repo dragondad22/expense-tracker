@@ -1,6 +1,7 @@
-# 🛠️ Local Development and Deployment Instructions
+# WealthWise 
+WealthWise is a comprehensive personal and business finance tool designed to track expenses, manage budgets, and more.
 
-## Local Development (venv)
+## 🛠️ Local Development and Deployment Instructions
 
 **Clone the Repository:**
 ```
