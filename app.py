@@ -1,16 +1,28 @@
 import sqlite3
 from flask import Flask, request, jsonify
+from flask_talisman import Talisman
 import bcrypt
 
 
 app = Flask(__name__)
+Talisman(app)
 
 
 # Gets the connection to the WealthWise database
 def get_db_connection():
-    conn = sqlite3.connect('wealthwise.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+    try:
+        conn = sqlite3.connect('wealthwise.db')
+        conn.row_factory = sqlite3.Row  # Enables dictionary-like access to rows
+        return conn
+    except sqlite3.Error as e:
+        # Log the error and raise an exception
+        print(f"Database connection failed: {str(e)}")
+        raise RuntimeError("Failed to connect to the database.")
+
+
+@app.route("/")
+def hello_world():
+    return "Welcome to WealthWise"
 
 
 @app.route('/register', methods=['Post'])
@@ -20,37 +32,33 @@ def register():
     # Extract user data from request
     username = data.get('username')
     email = data.get('email')
-    password = data.get('password')  # Store securely later
+    password = data.get('password')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     if not username or not email or not password:
         return jsonify({"error": "All fields required"}), 400
 
-    conn = get_db_connection()
     try:
-        cursor = conn.cursor()
-
-        # Insert the user into the database
-        cursor.execute('''
-            INSERT INTO users (username, email, password)
-            VALUES (?, ?, ?)
-        ''', (username, email, hashed_password))
+        # Use 'with' to ensure the connection is properly closed
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                '''
+                INSERT INTO users (username, email, password, first_name, last_name, created_at, is_active)
+                VALUES (?, ?, ?, ?, ?, datetime(), 1)
+                ''',
+                (username, email, hashed_password, first_name, last_name)
+            )
+            conn.commit()
 
         return jsonify({"message": "User registered successfully!"}), 201
     except sqlite3.IntegrityError:
         return jsonify({"error": "Username or email already exists"}), 400
-    finally:
-        conn.commit()
-        conn.close()
-
-@app.route("/")
-def hello_world():
-    return "Hello World"
-
-
-@app.route("/about")
-def about():
-    return "This is the about page."
+    except Exception as e:
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 
 @app.route("/user/<username>")
@@ -60,4 +68,3 @@ def user_profile(username):
 
 if __name__ == "__main__":
     app.run(debug=True)
-

@@ -14,9 +14,15 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    last_login TEXT NULL,
+    is_active INTEGER NOT NULL
 )
 ''')
+
 
 # Commit changes and close the connection
 conn.commit()
