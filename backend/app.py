@@ -1,12 +1,17 @@
 import sqlite3
 from flask import Flask, request, jsonify
 from flask_talisman import Talisman
+from flask_cors import CORS
 import bcrypt
 
 
 app = Flask(__name__)
+
+# Forces https 
 Talisman(app)
 
+# Enables cross orign scripting
+CORS(app)
 
 # Gets the connection to the WealthWise database
 def get_db_connection():
@@ -36,10 +41,12 @@ def register():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
 
+    # Hash the user password before storing it
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
+    # Verify required fields are entered.
     if not username or not email or not password:
-        return jsonify({"error": "All fields required"}), 400
+        return jsonify({"error": "User name, Email, and Password are required to continue"}), 400
 
     try:
         # Use 'with' to ensure the connection is properly closed
