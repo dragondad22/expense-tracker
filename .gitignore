@@ -15,3 +15,6 @@ venv/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# Prevent local DB from being replicated
+weathwise.db
