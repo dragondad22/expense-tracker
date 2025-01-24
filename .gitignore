@@ -17,4 +17,4 @@ venv/
 Thumbs.db
 
 # Prevent local DB from being replicated
-weathwise.db
+backend/wealthwise.db
