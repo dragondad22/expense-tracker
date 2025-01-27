@@ -1,6 +1,7 @@
 "use client"; // Required for event handling in Next.js app directory
 
 import { useState } from "react";
+import { validateRegistrationForm } from "../utils/validation";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -18,26 +19,7 @@ export default function RegisterPage() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.username) newErrors.username = "Username is required.";
-    if (!formData.email) {
-      newErrors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format.";
-    }
-    // if (!formData.firstname) newErrors.firstname = "First Name is required.";
-    // if (!formData.lastname) newErrors.lastname = "Last Name is required.";
-    if (!formData.password) {
-      newErrors.password = "Password is required.";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  validateRegistrationForm(formData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
