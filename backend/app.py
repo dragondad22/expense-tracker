@@ -3,12 +3,14 @@ from flask import Flask, request, jsonify
 from flask_talisman import Talisman
 from flask_cors import CORS
 import bcrypt
+import os
 
 
 app = Flask(__name__)
 
-# Forces https 
-Talisman(app)
+# Only enforce HTTPS if not in testing mode
+#if os.getenv("FLASK_ENV") != "testing":
+#    Talisman(app)
 
 # Enables cross orign scripting
 CORS(app)
