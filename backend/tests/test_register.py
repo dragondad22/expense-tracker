@@ -2,7 +2,7 @@ import pytest
 from app import app, get_db_connection
 import os
 
-test_url = f"http://127.0.0.1:5000/register"
+test_url = f"https://127.0.0.1:5000/register"
 
 @pytest.fixture
 def client():

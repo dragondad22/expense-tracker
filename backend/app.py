@@ -5,12 +5,12 @@ from flask_cors import CORS
 import bcrypt
 import os
 
-
+db_path = os.path.abspath("wealthwise.db")
 app = Flask(__name__)
 
 # Only enforce HTTPS if not in testing mode
-#if os.getenv("FLASK_ENV") != "testing":
-#    Talisman(app)
+if os.getenv("FLASK_ENV") != "testing":
+    Talisman(app)
 
 # Enables cross orign scripting
 CORS(app)
@@ -18,7 +18,12 @@ CORS(app)
 # Gets the connection to the WealthWise database
 def get_db_connection():
     try:
-        conn = sqlite3.connect('wealthwise.db')
+        # Check if the file exists
+        print(db_path)
+        if not os.path.exists(db_path):
+            raise FileNotFoundError(f"Database file '{db_path}' does not exist.")
+
+        conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row  # Enables dictionary-like access to rows
         return conn
     except sqlite3.Error as e:
